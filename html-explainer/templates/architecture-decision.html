@@ -1,0 +1,83 @@
+<!--
+Template: architecture-decision.html
+Use this for ADR/DRE pages.
+Replace {{PLACEHOLDERS}} with real content.
+Keep the page self-contained.
+-->
+
+{{BASE_PAGE_INSTRUCTIONS}}
+
+Required sections for this mode:
+
+- TL;DR da decisão
+- Status
+- Contexto
+- Problema / forças em conflito
+- Opções consideradas
+- Decisão tomada
+- Por que venceu
+- Trade-offs
+- Consequências positivas
+- Consequências negativas
+- Riscos e mitigação
+- Impacto em sistemas/times
+- Before/after
+- Próximos passos
+
+Recommended additions:
+
+- compact ADR Markdown copy block;
+- option comparison table;
+- decision timeline;
+- "what changes now" card;
+- "what does not change" card.
+
+Example content map:
+
+```html
+<section id="decision" class="card">
+  <span class="eyebrow">ADR / DRE</span>
+  <h2>Decisão tomada</h2>
+  <p>A decisão foi <strong>{{DECISION}}</strong>.</p>
+</section>
+
+<section id="options" class="card">
+  <h2>Opções consideradas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Opção</th>
+        <th>Benefícios</th>
+        <th>Custos/Riscos</th>
+        <th>Resultado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{OPTION_A}}</td>
+        <td>{{OPTION_A_PROS}}</td>
+        <td>{{OPTION_A_CONS}}</td>
+        <td><span class="status">{{OPTION_A_RESULT}}</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="adr-source" class="card">
+  <h2>ADR compacto</h2>
+  <pre><code># {{ADR_NUMBER}}. {{TITLE}}
+
+Status: {{STATUS}}
+Date: {{DATE}}
+
+## Context
+{{CONTEXT}}
+
+## Decision
+{{DECISION}}
+
+## Consequences
+{{CONSEQUENCES}}
+  </code></pre>
+</section>
+```
