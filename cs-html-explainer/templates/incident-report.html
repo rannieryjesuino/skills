@@ -1,0 +1,119 @@
+<!--
+  Template: incident-report (postmortem)
+  Mode kicker: POSTMORTEM  (or RELATÓRIO DE INCIDENTE)
+  Use this scaffold for incident reports, postmortems, debugging narratives, failure analysis.
+
+  Scaffold: copy base-page.html and apply the deltas below.
+  See: ../design/editorial-obsidian.md for tokens and visual rules.
+
+  Hero shape (mandatory):
+    - kicker: "POSTMORTEM"
+    - H1 left-aligned by default. CENTERING the hero is permitted IF the user wants a somber tone:
+        text-align: center; max-width: 18ch; margin: 0 auto;
+      Only this mode allows centered hero. Subtitle and meta-row follow the centered alignment.
+    - H1 with the failure verb italicized in lime, e.g.:
+        O ingestor <em>parou</em> de processar eventos por 47 minutos.
+
+  Mandatory sections (in order):
+    1. Hero
+    2. TL;DR card (.card.invert)
+    3. Impact stats (MANDATORY 3 huge stat blocks — see below)
+    4. Resumo (prose, max 68ch)
+    5. Timeline (MANDATORY — see below)
+    6. Detecção (prose + .status badges for source: monitoring, customer report, etc.)
+    7. Root cause (.card.forest — the only forest-green card in the page)
+    8. Contribuindo factors (.grid.two of teal cards)
+    9. O que funcionou bem (.checklist with .done glyphs)
+   10. O que falhou (.checklist with .status.warning labels in items, no .done)
+   11. Ações corretivas (table: ação | dono | prazo | status)
+   12. Ações preventivas (table — same columns)
+   13. Questões abertas (.checklist, no .done)
+
+  Mode-specific elements (do not skip):
+
+    A) Impact stats — 3 oversized Playfair numbers in lime, with Geist kickers.
+       Markup pattern:
+         <section class="section" id="impact">
+           <h2>Impacto</h2>
+           <div class="grid three">
+             <div class="stat">
+               <span class="kicker">DURAÇÃO</span>
+               <p class="stat-num">47<small>min</small></p>
+             </div>
+             <div class="stat">
+               <span class="kicker">EVENTOS PERDIDOS</span>
+               <p class="stat-num">12.4<small>k</small></p>
+             </div>
+             <div class="stat">
+               <span class="kicker">USUÁRIOS IMPACTADOS</span>
+               <p class="stat-num">~830</p>
+             </div>
+           </div>
+         </section>
+       Style:
+         .stat-num {
+           font-family: var(--font-serif);
+           font-weight: 500;
+           font-size: clamp(48px, 6vw, 80px);
+           color: var(--accent-lime);
+           line-height: 1;
+           margin: 8px 0 0;
+         }
+         .stat-num small {
+           font-family: var(--font-sans);
+           font-size: 18px;
+           color: var(--text-muted);
+           font-weight: 400;
+           margin-left: 4px;
+         }
+       The big lime numbers count against the lime budget — see below.
+
+    B) Timeline — the dominant visual element of this mode.
+       Markup pattern:
+         <ol class="incident-timeline">
+           <li>
+             <time class="t-time">14:02</time>
+             <div class="t-body">
+               <p>Alarme dispara em produção.</p>
+             </div>
+           </li>
+           ...
+         </ol>
+       Style:
+         .incident-timeline {
+           list-style: none; padding: 0; margin: 0;
+         }
+         .incident-timeline li {
+           display: grid;
+           grid-template-columns: 80px 1fr;
+           gap: 24px;
+           padding: 16px 0;
+           border-bottom: 1px solid var(--hairline-alpha);
+           align-items: baseline;
+         }
+         .t-time {
+           font-family: var(--font-mono);
+           font-size: 14px;
+           color: var(--text-muted);
+         }
+         .t-body p { margin: 0; color: var(--text); }
+       Timestamps live in Geist Mono on the left rail.
+
+    C) Root cause — the only place forest green appears.
+       Markup: <article class="card forest"><h2>Causa raiz</h2><p>...</p></article>
+       Keep it self-contained; do not duplicate forest green elsewhere.
+
+  Lime usage budget (max 5 per page) — STRICT in this mode:
+    - 1 in the H1 <em>
+    - 1 CTA pill
+    - 1 active nav left-border
+    - up to 2 .stat-num (you have 3 stat blocks; lime ONLY the most severe; render the others
+      in white --text). If you lime all 3, you've exceeded budget — pick the worst.
+
+  Status badge usage:
+    - .status.danger for severities, on-call gaps, missed alerts.
+    - .status.warning for partial successes, slow detection.
+    - .status.success ONLY for "what went well" — paired with .done checklist items.
+
+  Footer attribution stays: "Gerado por cs-html-explainer · Editorial Obsidian"
+-->

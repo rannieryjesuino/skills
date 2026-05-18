@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{TITLE}}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Geist:wght@300;400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:               #1A1615;
+      --surface:          #243833;
+      --surface-inverted: #FCF8EC;
+      --surface-forest:   #0F352B;
+      --pure-black:       #000000;
+
+      --accent-lime:       #DBFFA5;
+      --accent-lime-hover: #C5F088;
+      --accent-moss:       #274E13;
+
+      --text:           #FFFFFF;
+      --text-muted:     #9E9E9E;
+      --text-meta:      #666666;
+      --text-inverted:  #1A1615;
+
+      --hairline-alpha: rgba(239, 239, 239, 0.10);
+      --border-card:    rgba(255, 255, 255, 0.10);
+
+      --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+      --font-sans:  "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-mono:  "Geist Mono", ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+
+      --space-xs: 8px;
+      --space-sm: 16px;
+      --space-md: 32px;
+      --space-lg: 64px;
+      --space-xl: 96px;
+      --space-2xl: 120px;
+
+      --radius-card: 4px;
+      --radius-pill: 999px;
+
+      --max-content:   1200px;
+      --sidebar-width: 220px;
+      --topbar-height: 56px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent-lime);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+    a:hover { border-bottom-color: var(--accent-lime); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      min-height: 100vh;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: var(--space-md) 20px;
+      background: var(--bg);
+      border-right: 1px solid var(--border-card);
+      overflow: auto;
+    }
+
+    .brand {
+      margin-bottom: var(--space-lg);
+    }
+
+    .brand strong {
+      display: block;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 18px;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .brand span {
+      display: block;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-meta);
+    }
+
+    nav .nav-label {
+      color: var(--text-meta);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 10px;
+      font-weight: 600;
+      margin: var(--space-md) 0 var(--space-sm);
+    }
+
+    nav a {
+      display: block;
+      padding: 8px 0 8px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+      border-bottom: none;
+      border-left: 2px solid transparent;
+      margin: 2px 0;
+    }
+
+    nav a:hover { color: var(--text); border-bottom: none; }
+
+    nav a.active {
+      color: var(--text);
+      border-left-color: var(--accent-lime);
+      padding-left: 18px;
+    }
+
+    main { min-width: 0; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      height: var(--topbar-height);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--space-sm);
+      padding: 0 var(--space-md);
+      background: var(--bg);
+      border-bottom: 1px solid var(--hairline-alpha);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+    }
+
+    .button.ghost {
+      background: transparent;
+      color: var(--text);
+      padding: 10px 18px;
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-card);
+    }
+    .button.ghost:hover { border-color: var(--text); }
+
+    .button.primary {
+      background: var(--accent-lime);
+      color: var(--text-inverted);
+      padding: 10px 22px;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+    }
+    .button.primary:hover { background: var(--accent-lime-hover); }
+
+    .content {
+      max-width: var(--max-content);
+      margin: 0 auto;
+      padding: var(--space-lg) var(--space-md) var(--space-2xl);
+    }
+
+    .hero {
+      padding-top: var(--space-lg);
+      padding-bottom: var(--space-2xl);
+    }
+
+    .kicker {
+      display: block;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-lime);
+      margin-bottom: var(--space-sm);
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(48px, 6vw, 80px);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      max-width: 18ch;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent-lime);
+      font-weight: 400;
+    }
+
+    h2 {
+      font-size: clamp(32px, 3.2vw, 44px);
+      font-weight: 500;
+      letter-spacing: -0.015em;
+      line-height: 1.1;
+      margin-bottom: var(--space-md);
+    }
+
+    h3 {
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-sm);
+    }
+
+    .subtitle {
+      font-family: var(--font-sans);
+      font-weight: 300;
+      font-size: 21px;
+      color: var(--text-muted);
+      margin: var(--space-md) 0 var(--space-lg);
+      max-width: 60ch;
+      line-height: 1.5;
+    }
+
+    .meta-row {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .meta-row span + span::before {
+      content: "   |   ";
+      color: var(--text-meta);
+      white-space: pre;
+    }
+
+    .divider {
+      border: 0;
+      border-top: 1px solid var(--hairline-alpha);
+      margin: var(--space-xl) 0 var(--space-lg);
+    }
+
+    .section {
+      scroll-margin-top: calc(var(--topbar-height) + var(--space-md));
+      margin-bottom: var(--space-xl);
+    }
+
+    .prose {
+      max-width: 68ch;
+      color: var(--text);
+    }
+    .prose p { margin: 0 0 var(--space-sm); }
+    .prose .muted { color: var(--text-muted); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-card);
+      padding: var(--space-md);
+    }
+
+    .card.invert {
+      background: var(--surface-inverted);
+      color: var(--text-inverted);
+      border-color: transparent;
+    }
+    .card.invert .muted { color: var(--text-meta); }
+    .card.invert h2,
+    .card.invert h3 { color: var(--text-inverted); }
+
+    .card.forest {
+      background: var(--surface-forest);
+    }
+
+    .grid {
+      display: grid;
+      gap: 24px;
+    }
+    .grid.two   { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .flow {
+      display: flex;
+      align-items: stretch;
+      gap: var(--space-sm);
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .node {
+      min-width: 180px;
+      background: var(--surface);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-card);
+      padding: 24px;
+    }
+    .node strong {
+      display: block;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .node span {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .arrow {
+      display: grid;
+      place-items: center;
+      color: var(--accent-moss);
+      font-size: 18px;
+      min-width: 32px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      padding: 0 var(--space-sm) 12px 0;
+      border-bottom: 1px solid var(--hairline-alpha);
+    }
+
+    td {
+      padding: 14px var(--space-sm) 14px 0;
+      border-bottom: 1px solid var(--hairline-alpha);
+      vertical-align: top;
+      color: var(--text);
+    }
+
+    td.muted { color: var(--text-muted); }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .status.success { color: var(--accent-lime); }
+    .status.success::before { content: "●"; }
+
+    .status.warning { color: var(--surface-inverted); }
+    .status.warning::before { content: "▲"; }
+
+    .status.danger {
+      color: var(--text);
+      position: relative;
+      padding-left: 12px;
+    }
+    .status.danger::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 16px;
+      background: var(--pure-black);
+    }
+
+    .status.neutral { color: var(--text-meta); }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .checklist li {
+      display: flex;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--hairline-alpha);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      color: var(--text);
+    }
+    .checklist li::before {
+      content: "▢";
+      color: var(--accent-moss);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .checklist li.done::before { content: "▣"; }
+
+    pre.code, code.mono {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text);
+    }
+    pre.code {
+      background: var(--surface);
+      border-left: 4px solid var(--accent-moss);
+      padding: var(--space-sm) var(--space-md);
+      overflow-x: auto;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      margin-top: var(--space-2xl);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--hairline-alpha);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      color: var(--text-meta);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent-lime);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      aside {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-card);
+      }
+      .grid.two, .grid.three { grid-template-columns: 1fr; }
+      .topbar { position: static; }
+      h1 { font-size: clamp(40px, 9vw, 56px); }
+    }
+
+    @media print {
+      aside, .topbar { display: none; }
+      .layout { grid-template-columns: 1fr; }
+      body { background: #fff; color: #000; }
+      .card { border: 1px solid #ddd; background: #fff; color: #000; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <div class="brand">
+        <strong>Editorial</strong>
+        <span>HTML Explainer</span>
+      </div>
+
+      <nav aria-label="Navegação principal">
+        <div class="nav-label">Navegação</div>
+        <a class="active" href="#overview">Visão geral</a>
+        <a href="#tldr">TL;DR</a>
+        <a href="#flow">Fluxo</a>
+        <a href="#details">Detalhes</a>
+        <a href="#risks">Riscos</a>
+        <a href="#next">Próximos passos</a>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <button class="button ghost" onclick="window.print()">Exportar / PDF</button>
+        <button class="button primary" onclick="copySummary()">Copiar resumo</button>
+      </div>
+
+      <div class="content">
+        <section class="hero" id="overview">
+          <span class="kicker">{{MODE_KICKER}}</span>
+          <h1>{{TITLE_WITH_EM}}</h1>
+          <p class="subtitle">{{SUBTITLE}}</p>
+          <p class="meta-row">
+            <span>Status · {{STATUS}}</span>
+            <span>Owner · {{OWNER}}</span>
+            <span>Atualizado · {{DATE}}</span>
+          </p>
+        </section>
+
+        <hr class="divider" />
+
+        <section class="section" id="tldr">
+          <article class="card invert">
+            <h2>TL;DR</h2>
+            <p>{{TLDR}}</p>
+          </article>
+        </section>
+
+        <hr class="divider" />
+
+        <section class="section" id="flow">
+          <h2>Fluxo em alto nível</h2>
+          <div class="flow" aria-label="Fluxo em alto nível">
+            <div class="node"><strong>{{STEP_1}}</strong><span>{{STEP_1_DESC}}</span></div>
+            <div class="arrow" aria-hidden="true">→</div>
+            <div class="node"><strong>{{STEP_2}}</strong><span>{{STEP_2_DESC}}</span></div>
+            <div class="arrow" aria-hidden="true">→</div>
+            <div class="node"><strong>{{STEP_3}}</strong><span>{{STEP_3_DESC}}</span></div>
+            <div class="arrow" aria-hidden="true">→</div>
+            <div class="node"><strong>{{STEP_4}}</strong><span>{{STEP_4_DESC}}</span></div>
+          </div>
+        </section>
+
+        <section class="section" id="details">
+          <h2>Detalhes principais</h2>
+          <table>
+            <thead>
+              <tr><th>Item</th><th>Descrição</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>{{DETAIL_1}}</td><td class="muted">{{DETAIL_1_DESC}}</td></tr>
+              <tr><td>{{DETAIL_2}}</td><td class="muted">{{DETAIL_2_DESC}}</td></tr>
+              <tr><td>{{DETAIL_3}}</td><td class="muted">{{DETAIL_3_DESC}}</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="section" id="risks">
+          <h2>Riscos e mitigações</h2>
+          <div class="grid three">
+            <article class="card">
+              <h3>{{RISK_1_TITLE}}</h3>
+              <p class="prose muted">{{RISK_1_DESC}}</p>
+              <span class="status danger">Risco alto</span>
+            </article>
+            <article class="card">
+              <h3>{{RISK_2_TITLE}}</h3>
+              <p class="prose muted">{{RISK_2_DESC}}</p>
+              <span class="status warning">Atenção</span>
+            </article>
+            <article class="card">
+              <h3>{{MITIGATION_TITLE}}</h3>
+              <p class="prose muted">{{MITIGATION_DESC}}</p>
+              <span class="status success">Planejado</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="next">
+          <h2>Próximos passos</h2>
+          <ul class="checklist">
+            <li>{{NEXT_1}}</li>
+            <li>{{NEXT_2}}</li>
+            <li>{{NEXT_3}}</li>
+          </ul>
+        </section>
+
+        <footer>
+          Gerado por cs-html-explainer · Editorial Obsidian
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function copySummary() {
+      const text = `{{TITLE}}\n\nTL;DR: {{TLDR}}`;
+      navigator.clipboard?.writeText(text);
+    }
+  </script>
+</body>
+</html>

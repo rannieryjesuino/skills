@@ -1,0 +1,102 @@
+<!--
+  Template: module-map
+  Mode kicker: MAPA DE MÓDULO  (or MODULE MAP)
+  Use this scaffold for codebase/module explanation, service ownership maps, dependency maps,
+  and onboarding pages.
+
+  Scaffold: copy base-page.html and apply the deltas below.
+  See: ../design/editorial-obsidian.md for tokens and visual rules.
+
+  Hero shape (mandatory):
+    - kicker: "MAPA DE MÓDULO"
+    - H1 with a navigational verb italicized in lime, e.g.:
+        Como o módulo de cobrança <em>funciona</em> por dentro.
+
+  Mandatory sections (in order):
+    1. Hero
+    2. TL;DR card (.card.invert)
+    3. Visão geral do módulo (prose, max 68ch)
+    4. Entry points (MANDATORY — see below)
+    5. Mapa de arquivos (MANDATORY 2-column grid — see below)
+    6. Principais abstrações (.grid.two of teal cards)
+    7. Dependências (EITHER a horizontal .flow OR a small table — NEVER both)
+    8. Fluxo de dados (.flow vertical OR sequence-style description)
+    9. Pontos de extensão (.checklist with .done glyphs for stable APIs)
+   10. Mudanças comuns (table: "quero fazer X" | "edite Y" | "rode Z")
+   11. Riscos (.grid.two with .status.warning / .danger)
+   12. Estratégia de testes (prose + optional .checklist)
+
+  Mode-specific elements (do not skip):
+
+    A) Entry points — oversized Playfair italic links in lime, NOT pill buttons.
+       Markup pattern:
+         <section class="section" id="entry-points">
+           <h2>Entry points</h2>
+           <ul class="entry-list">
+             <li><a href="#" class="entry"><em>POST</em> /api/charges</a><span class="muted">Cria uma cobrança nova.</span></li>
+             <li><a href="#" class="entry"><em>worker</em> charges.consumer</a><span class="muted">Consome a fila de eventos.</span></li>
+           </ul>
+         </section>
+       Style:
+         .entry-list { list-style: none; padding: 0; margin: 0; }
+         .entry-list li {
+           padding: 24px 0; border-bottom: 1px solid var(--hairline-alpha);
+         }
+         .entry-list a.entry {
+           font-family: var(--font-serif);
+           font-style: italic;
+           font-size: 24px;
+           color: var(--accent-lime);
+           border-bottom: none;
+           display: block;
+           margin-bottom: 6px;
+         }
+         .entry-list .muted {
+           font-family: var(--font-sans);
+           font-size: 14px;
+           color: var(--text-muted);
+         }
+       These italic-lime entry-point links count against the lime budget — see below.
+
+    B) File map — 2-column grid, file tree on the left in Geist Mono, annotation cards on right.
+       Markup pattern:
+         <div class="grid two" id="file-map">
+           <pre class="code file-tree">
+src/
+├── api/
+│   ├── charges.ts            # entry point: HTTP routes
+│   └── webhooks.ts
+├── domain/
+│   ├── charge.ts             # main aggregate
+│   └── policies/
+└── infra/
+    ├── db/
+    └── queue/
+           </pre>
+           <div class="grid" style="gap:16px;">
+             <article class="card"><h3>api/</h3><p class="muted">Camada HTTP. Não tem regra de negócio.</p></article>
+             <article class="card"><h3>domain/</h3><p class="muted">Onde mora a lógica.</p></article>
+             <article class="card"><h3>infra/</h3><p class="muted">Conexões com DB e fila.</p></article>
+           </div>
+         </div>
+       The file tree uses .code (Geist Mono, 4px moss left bar) — no syntax highlighting needed.
+
+  Lime usage budget (max 5 per page) — TIGHT in this mode because entry points are lime:
+    - 1 in the H1 <em>
+    - 1 CTA pill
+    - 1 active nav left-border
+    - up to 2 entry-point italic links (CAP HARD AT TWO — if you have more entry points,
+      render the rest in --text white italic, no lime color)
+
+  Status badges for risks:
+    - Dívida técnica conhecida -> .status.warning ("ATENÇÃO")
+    - Hot-spot / código frágil -> .status.danger ("RISCO ALTO")
+    - Estável / coberto por testes -> .status.success ("OK") — sparingly
+
+  Dependencies rule (the hard one):
+    - You may render dependencies as EITHER a horizontal .flow OR a small table — NEVER both.
+    - If choosing .flow: max 5 nodes, arrows in --accent-moss, no lime.
+    - If choosing table: 3 columns (Dependência | Tipo | Crítica para).
+
+  Footer attribution stays: "Gerado por cs-html-explainer · Editorial Obsidian"
+-->

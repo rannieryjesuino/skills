@@ -1,0 +1,45 @@
+<!--
+  Template: system-explainer
+  Mode kicker: SYSTEM EXPLAINER (or a localized equivalent: EXPLICADOR DE SISTEMA)
+  Use this template scaffold to explain how a system, flow, integration, or feature works.
+
+  Scaffold: copy base-page.html and apply the deltas below.
+  See: ../design/editorial-obsidian.md for tokens and visual rules.
+
+  Mandatory sections (in order):
+    1. Hero (kicker + H1 with ONE <em> in lime + subtitle + metadata row)
+    2. TL;DR card (use .card.invert — the one inversion allowed per page)
+    3. Problema que isso resolve (prose, no card chrome)
+    4. Fluxo em alto nível (mandatory .flow with .node + .arrow — arrows in --accent-moss)
+    5. Componentes (table OR .grid.three of teal cards — NEVER both)
+    6. Dados / mensagens trocadas (table preferred)
+    7. Diagrama de sequência ou arquitetura (HTML/CSS boxes; .flow vertical or grid)
+    8. Detalhes operacionais (prose + optional table)
+    9. Falhas conhecidas (.grid.two of teal cards, each with .status.danger or .status.warning)
+   10. Troubleshooting (table: sintoma | causa provável | ação)
+   11. FAQ (<details> elements, no card chrome, hairline between items)
+   12. Próximos passos (.checklist)
+
+  Mode-specific element (do not skip):
+    - The horizontal .flow diagram between hero and details. It is the visual signature of this mode.
+
+  Status badge rules:
+    - Use .status.danger for FALHA / RISCO ALTO (black bar + uppercase label).
+    - Use .status.warning for ATENÇÃO (off-white triangle + uppercase label).
+    - Never red/yellow fills.
+
+  Lime usage budget (max 5 per page):
+    - 1 in the H1 <em>
+    - 1 CTA pill in topbar
+    - 1 active nav item left-border
+    - up to 2 inline links or success statuses
+
+  FAQ rendering hint:
+    <details class="faq-item">
+      <summary><strong>Pergunta?</strong></summary>
+      <p class="muted">Resposta em prose, max 68ch.</p>
+    </details>
+    Style summary with hairline bottom and no marker box.
+
+  Footer attribution stays: "Gerado por cs-html-explainer · Editorial Obsidian"
+-->

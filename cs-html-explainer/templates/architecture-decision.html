@@ -1,0 +1,69 @@
+<!--
+  Template: architecture-decision (ADR / DRE)
+  Mode kicker: ADR / DRE  (or DECISÃO DE ARQUITETURA)
+  Use this scaffold for architecture decisions, trade-off analysis, and decision explanation.
+
+  Scaffold: copy base-page.html and apply the deltas below.
+  See: ../design/editorial-obsidian.md for tokens and visual rules.
+
+  Hero shape (mandatory):
+    - kicker: "ADR / DRE"
+    - H1 with a decision verb italicized in lime, e.g.:
+        Decidimos <em>migrar</em> o pipeline de eventos para Kinesis.
+    - Subtitle in muted gray.
+    - Metadata row includes Status uppercase: PROPOSTO | ACEITO | SUPERADO | DEPRECIADO | REJEITADO.
+
+  Mandatory sections (in order):
+    1. Hero
+    2. TL;DR card (.card.invert — the one inversion allowed)
+    3. Contexto (prose, no chrome)
+    4. Problema / forças em conflito (prose + optional small .grid.two cards)
+    5. Opções consideradas (MANDATORY full-width comparison table — see below)
+    6. Decisão (single paragraph, prose, no card chrome)
+    7. Por que esta opção venceu (prose + optional .checklist)
+    8. Trade-offs (.grid.two of teal cards)
+    9. Consequências positivas (.checklist with .done glyphs)
+   10. Consequências negativas (.checklist, no .done glyphs)
+   11. Riscos e mitigações (.grid.three with .status danger/warning/success)
+   12. Sistemas/times impactados (table)
+   13. Antes / Depois (MANDATORY — see below)
+   14. ADR-source block (optional <pre class="code"> with compact markdown ADR text)
+   15. Próximos passos (.checklist)
+
+  Mode-specific elements (do not skip):
+
+    A) Option comparison table — full width, hairlines only, NO zebra stripes.
+       Columns: Opção | Pontos fortes | Pontos fracos | Decisão.
+       The chosen row gets a single .status.success cell ("ESCOLHIDA") — no row fill, no lime background.
+
+    B) Antes / Depois panel — two stacked teal cards separated by a hairline label.
+       Markup:
+         <article class="card"><h3>Antes</h3><p class="muted">...</p></article>
+         <p class="meta-row" style="text-align:center;margin:24px 0;">→ DEPOIS</p>
+         <article class="card"><h3>Depois</h3><p class="muted">...</p></article>
+       Never side-by-side. The vertical stack is intentional (editorial respiro).
+
+    C) ADR-source block — optional, only if user asks for a copyable ADR.
+       Render inside <pre class="code"> using compact ADR markdown:
+         # ADR-XXXX: <título>
+         Status: ACEITO
+         Date: YYYY-MM-DD
+         Context: ...
+         Decision: ...
+         Consequences: ...
+
+  Status badges (in metadata row and option table):
+    - PROPOSTO / ACEITO -> .status.success
+    - SUPERADO / DEPRECIADO -> .status.neutral
+    - REJEITADO -> .status.danger
+    Always uppercase Geist 11px, never pill-shaped.
+
+  Lime usage budget (max 5 per page):
+    - 1 in the H1 <em> (the decision verb)
+    - 1 CTA pill in topbar
+    - 1 active nav item left-border
+    - 1 in the "ESCOLHIDA" success label
+    - up to 1 inline link
+
+  Footer attribution stays: "Gerado por cs-html-explainer · Editorial Obsidian"
+-->

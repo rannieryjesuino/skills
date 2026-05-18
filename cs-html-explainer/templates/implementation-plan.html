@@ -1,0 +1,78 @@
+<!--
+  Template: implementation-plan
+  Mode kicker: PLANO DE EXECUÇÃO  (or IMPLEMENTATION PLAN)
+  Use this scaffold for migrations, refactors, rollout plans, and technical delivery strategy.
+
+  Scaffold: copy base-page.html and apply the deltas below.
+  See: ../design/editorial-obsidian.md for tokens and visual rules.
+
+  Hero shape (mandatory):
+    - kicker: "PLANO DE EXECUÇÃO"
+    - H1 with an action verb italicized in lime, e.g.:
+        Vamos <em>migrar</em> o pipeline em três ondas controladas.
+
+  Mandatory sections (in order):
+    1. Hero
+    2. TL;DR card (.card.invert — the one inversion allowed)
+    3. Objetivo (single paragraph prose)
+    4. Estado atual (prose + optional small table)
+    5. Estado-alvo (prose + optional small table)
+    6. Escopo (.checklist)
+    7. Não-objetivos (.checklist, no .done glyphs)
+    8. Marcos / Timeline (MANDATORY vertical timeline — see below)
+    9. Plano passo-a-passo (.checklist OR ordered list of teal cards)
+   10. Riscos (.grid.two of teal cards with .status danger/warning labels)
+   11. Rollback (USE THE INVERSION EXCEPTION — see below)
+   12. Validação (.checklist of acceptance criteria)
+   13. Donos (table: área | responsável | sign-off)
+   14. Timeline (small table or vertical timeline summary)
+
+  Mode-specific elements (do not skip):
+
+    A) Vertical timeline — the visual signature of this mode.
+       Markup pattern:
+         <ol class="timeline">
+           <li>
+             <span class="t-marker"></span>
+             <div class="t-body">
+               <h3>Marco 1 — Nome</h3>
+               <p class="muted">Descrição curta · Data ou janela</p>
+             </div>
+           </li>
+           ...
+         </ol>
+       Style:
+         .timeline { list-style: none; padding: 0; margin: 0; position: relative; }
+         .timeline::before {
+           content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px;
+           width: 1px; background: var(--border-card);
+         }
+         .timeline li { display: flex; gap: 24px; padding: 24px 0;
+                        border-bottom: 1px solid var(--hairline-alpha); }
+         .timeline .t-marker {
+           width: 8px; height: 8px; flex-shrink: 0; margin-top: 12px;
+           background: var(--accent-lime); transform: translateX(3px);
+         }
+       Each li carries one 8x8px lime square as the milestone marker. Spend max 4 of these per page.
+
+    B) Rollback block — the ONE inversion exception in this mode.
+       Render as .card.invert with off-white background, dark text, and an uppercase
+       kicker label "PLANO DE SAÍDA" above the H2.
+       This makes rollback stand out as an editorial pull-quote: an exit ramp.
+
+  Lime usage budget (max 5 per page):
+    - 1 in the H1 <em>
+    - 1 CTA pill
+    - 1 active nav left-border
+    - up to 2 milestone markers OR 1 marker + 1 success status (count markers as a budget item)
+    Be strict — if you use 4 timeline markers, you've already exceeded budget. Use lime markers
+    only for milestones the user EXPLICITLY flagged as critical; render the rest in --accent-moss.
+
+  Status mapping for risk cards:
+    - Risco crítico -> .status.danger ("RISCO ALTO")
+    - Risco médio -> .status.warning ("ATENÇÃO")
+    - Mitigação planejada -> .status.success ("PLANEJADO")
+    - Bloqueio -> .status.danger ("BLOQUEADO")
+
+  Footer attribution stays: "Gerado por cs-html-explainer · Editorial Obsidian"
+-->
