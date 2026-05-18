@@ -1,45 +1,162 @@
 <!--
   Template: system-explainer
-  Mode kicker: SYSTEM EXPLAINER (or a localized equivalent: EXPLICADOR DE SISTEMA)
-  Use this template scaffold to explain how a system, flow, integration, or feature works.
+  Mode kicker: SYSTEM EXPLAINER  (or, in PT-BR: EXPLICADOR DE SISTEMA)
 
-  Scaffold: copy base-page.html and apply the deltas below.
+  Use this scaffold to explain how a system, flow, integration, service, or
+  feature works.
+
+  Scaffold: copy templates/base-page.html and apply the deltas below.
   See: ../design/editorial-obsidian.md for tokens and visual rules.
 
-  Mandatory sections (in order):
-    1. Hero (kicker + H1 with ONE <em> in lime + subtitle + metadata row)
-    2. TL;DR card (use .card.invert — the one inversion allowed per page)
-    3. Problema que isso resolve (prose, no card chrome)
-    4. Fluxo em alto nível (mandatory .flow with .node + .arrow — arrows in --accent-moss)
-    5. Componentes (table OR .grid.three of teal cards — NEVER both)
-    6. Dados / mensagens trocadas (table preferred)
-    7. Diagrama de sequência ou arquitetura (HTML/CSS boxes; .flow vertical or grid)
-    8. Detalhes operacionais (prose + optional table)
-    9. Falhas conhecidas (.grid.two of teal cards, each with .status.danger or .status.warning)
-   10. Troubleshooting (table: sintoma | causa provável | ação)
-   11. FAQ (<details> elements, no card chrome, hairline between items)
-   12. Próximos passos (.checklist)
+  ============================================================
+  HERO SHAPE
+  ============================================================
 
-  Mode-specific element (do not skip):
-    - The horizontal .flow diagram between hero and details. It is the visual signature of this mode.
+  Use the default left-rail hero (NOT the centered .hero.front variant — that
+  is reserved for incident-report).
 
-  Status badge rules:
-    - Use .status.danger for FALHA / RISCO ALTO (black bar + uppercase label).
-    - Use .status.warning for ATENÇÃO (off-white triangle + uppercase label).
-    - Never red/yellow fills.
+    <header class="masthead"> ... </header>
 
-  Lime usage budget (max 5 per page):
-    - 1 in the H1 <em>
-    - 1 CTA pill in topbar
-    - 1 active nav item left-border
-    - up to 2 inline links or success statuses
+    <section class="hero">
+      <div class="left-rail">
+        <span class="label">SYSTEM EXPLAINER</span>
+        <div class="row"><span>Status</span><span class="v">Produção</span></div>
+        <div class="row"><span>Owner</span><span class="v">{{SQUAD}}</span></div>
+        <div class="row"><span>Atualizado</span><span class="v">{{DATE}}</span></div>
+        <div class="row"><span>Folio</span><span class="v">01 / 05</span></div>
+      </div>
+      <h1>Como o {{SISTEMA}} <em>{{VERBO}}</em> {{COMPLEMENTO}}.</h1>
+    </section>
 
-  FAQ rendering hint:
-    <details class="faq-item">
-      <summary><strong>Pergunta?</strong></summary>
-      <p class="muted">Resposta em prose, max 68ch.</p>
-    </details>
-    Style summary with hairline bottom and no marker box.
+    <section class="lede-row">
+      <span class="marker">Sinopse</span>
+      <p class="lede">Uma visão linear do fluxo: <strong>do botão clicado</strong> até o efeito final. Cobre o caminho feliz, os pontos de falha e onde olhar quando algo vai mal.</p>
+    </section>
 
-  Footer attribution stays: "Gerado por cs-html-explainer · Editorial Obsidian"
+  ============================================================
+  MANDATORY SECTIONS (in order)
+  ============================================================
+
+    1. Masthead + Hero (left-rail variant) + Lede row
+    2. TL;DR paper band (.tldr-paper — the page's single inversion)
+    3. Problema que isso resolve  (prose, no chrome)
+    4. Fluxo em alto nível         (MANDATORY .flow — see signature)
+    5. Componentes                 (table.editorial OR .hairline-grid — never both)
+    6. Dados / mensagens trocadas  (table.editorial preferred)
+    7. Detalhes operacionais       (prose + optional table)
+    8. Falhas conhecidas           (.hairline-grid two-up, with .status danger/warning)
+    9. Troubleshooting             (table.editorial: sintoma | causa provável | ação)
+   10. FAQ                         (.faq <details> elements — hairline only)
+   11. Próximos passos             (.checklist)
+
+  Every section sits inside <main class="sections"> using the marginalia
+  pattern .section[.rail + .content]. The rail carries the section number,
+  short topic word, and a one-line `.ref` note.
+
+  ============================================================
+  MODE-SPECIFIC SIGNATURE — do not skip
+  ============================================================
+
+  Horizontal .flow diagram between hero/TL;DR and the rest. This is the visual
+  signature of the system-explainer mode.
+
+    <div class="flow" aria-label="Fluxo do checkout">
+      <div class="node"><span class="num">01</span><span class="name">Cliente</span><span class="desc">Confirma pedido na UI</span></div>
+      <div class="node"><span class="num">02</span><span class="name">API</span><span class="desc">Valida e orquestra</span></div>
+      <div class="node"><span class="num">03</span><span class="name">Gateway</span><span class="desc">Autoriza cartão</span></div>
+      <div class="node"><span class="num">04</span><span class="name">Banco</span><span class="desc">Grava pedido</span></div>
+      <div class="node"><span class="num">05</span><span class="name">Fila</span><span class="desc">Dispara pós-venda</span></div>
+    </div>
+
+  Style notes (already in base-page.html):
+    - 5-column grid, hairlines as gutters (no card frames).
+    - Each .node carries a mono num, an italic-serif name, and a short desc.
+    - The "→" between nodes is rendered with .node::after on top of the hairline.
+    - Arrows use --accent-moss. Never lime.
+    - Limit to 5–6 nodes. Break into a second flow if you need more.
+
+  Follow the flow with one short prose paragraph that says what the flow does
+  NOT show (async side effects, fan-out, retries — whatever the diagram omits).
+
+  ============================================================
+  COMPONENT PATTERNS
+  ============================================================
+
+  Failures grid — use .hairline-grid (NOT framed cards):
+
+    <div class="hairline-grid">
+      <article>
+        <h3>Timeout do gateway em pico</h3>
+        <p>PSPs externos eventualmente ficam lentos em datas comerciais...</p>
+        <span class="status warning">Atenção</span>
+      </article>
+      <article>
+        <h3>Reserva órfã de estoque</h3>
+        <p>Se a API morre depois de reservar e antes de gravar...</p>
+        <span class="status danger">Risco alto</span>
+      </article>
+    </div>
+
+  Troubleshooting table — three columns, hairlines only:
+
+    <table class="editorial">
+      <thead>
+        <tr><th>Sintoma</th><th>Causa provável</th><th>Ação</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>"Tente novamente" para o cliente</td><td class="muted">Timeout do PSP primário.</td><td class="muted">Conferir dashboard X e abrir incidente se afetar &gt;5%.</td></tr>
+      </tbody>
+    </table>
+
+  FAQ — use .faq <details>:
+
+    <div class="faq">
+      <details>
+        <summary>Pergunta curta, em uma linha?</summary>
+        <p>Resposta em prose, máx 56ch, em --text-muted.</p>
+      </details>
+    </div>
+
+  ============================================================
+  STATUS BADGE USAGE
+  ============================================================
+
+    - .status.danger   → FALHA / RISCO ALTO    (black bar + label)
+    - .status.warning  → ATENÇÃO               (off-white ▲ + label)
+    - .status.success  → SUCESSO / OK / PLANEJADO (lime ● + label)
+    - .status.neutral  → NOTA                   (no glyph)
+
+  Color always pairs with an uppercase typographic label. Never red/yellow.
+
+  ============================================================
+  LIME BUDGET (max 5 per page)
+  ============================================================
+
+    1. The H1 <em>                              (the verb of the system)
+    2. The .cta primary in the masthead
+    3. The .left-rail .label of the hero
+    4. Inline links inside prose                (count each one)
+    5. One .status.success label OR an italic-lime node name
+
+  Forbidden in this mode:
+    - Lime backgrounds on flow nodes.
+    - Lime inside tables (header, row, or cell).
+    - Two italic-lime keywords in the same H1.
+
+  ============================================================
+  RAIL NUMBERING SUGGESTION
+  ============================================================
+
+    01 — O problema       ref: por que existe
+    02 — Fluxo            ref: do clique ao resultado
+    03 — Componentes      ref: quem faz o quê
+    04 — Dados            ref: mensagens em trânsito
+    05 — Operação         ref: o que importa em prod
+    06 — Falhas           ref: conhecidas hoje
+    07 — Diagnóstico      ref: quando algo vai mal
+    08 — FAQ              ref: perguntas frequentes
+    09 — A seguir         ref: o que ainda falta
+
+  Footer footnote attribution stays fixed:
+    Editorial Obsidian — cs-html-explainer
 -->

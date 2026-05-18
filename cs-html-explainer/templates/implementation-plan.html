@@ -1,78 +1,224 @@
 <!--
   Template: implementation-plan
   Mode kicker: PLANO DE EXECUÇÃO  (or IMPLEMENTATION PLAN)
-  Use this scaffold for migrations, refactors, rollout plans, and technical delivery strategy.
 
-  Scaffold: copy base-page.html and apply the deltas below.
+  Use this scaffold for migrations, refactors, rollout plans, and technical
+  delivery strategy.
+
+  Scaffold: copy templates/base-page.html and apply the deltas below.
+  This mode uses the SINGLE-COLUMN hero with eyebrow-row, the horizontal
+  WAVES BAND signature, and the .paper-band for the rollback pull-quote.
+
   See: ../design/editorial-obsidian.md for tokens and visual rules.
 
-  Hero shape (mandatory):
-    - kicker: "PLANO DE EXECUÇÃO"
-    - H1 with an action verb italicized in lime, e.g.:
-        Vamos <em>migrar</em> o pipeline em três ondas controladas.
+  ============================================================
+  HERO SHAPE — single column with eyebrow-row + 4-column ledger
+  ============================================================
 
-  Mandatory sections (in order):
-    1. Hero
-    2. TL;DR card (.card.invert — the one inversion allowed)
-    3. Objetivo (single paragraph prose)
-    4. Estado atual (prose + optional small table)
-    5. Estado-alvo (prose + optional small table)
-    6. Escopo (.checklist)
-    7. Não-objetivos (.checklist, no .done glyphs)
-    8. Marcos / Timeline (MANDATORY vertical timeline — see below)
-    9. Plano passo-a-passo (.checklist OR ordered list of teal cards)
-   10. Riscos (.grid.two of teal cards with .status danger/warning labels)
-   11. Rollback (USE THE INVERSION EXCEPTION — see below)
-   12. Validação (.checklist of acceptance criteria)
-   13. Donos (table: área | responsável | sign-off)
-   14. Timeline (small table or vertical timeline summary)
+    <section class="hero" style="grid-template-columns: 1fr;">
+      <div>
+        <div class="eyebrow-row">
+          <span class="kicker">Plano de execução</span>
+          <span class="rule"></span>
+          <span class="id">P-{{NUM}} · {{DATE}}</span>
+        </div>
+        <h1>Vamos <em>{{VERBO}}</em> {{COMPLEMENTO}} em três ondas controladas.</h1>
+        <p class="subtitle">
+          Substituir o {{COMPONENTE}} por {{ALVO}}, <strong>sem janela de manutenção</strong>
+          e com rollback por feature flag em cada onda.
+        </p>
+        <div class="hero-meta">
+          <div class="item"><span class="k">Status</span><span class="v">Planejado</span></div>
+          <div class="item"><span class="k">Owner</span><span class="v">{{SQUAD}}</span></div>
+          <div class="item"><span class="k">Duração</span><span class="v">{{N}} semanas</span></div>
+          <div class="item"><span class="k">Rollback</span><span class="v">&lt; 5 min</span></div>
+        </div>
+      </div>
+    </section>
 
-  Mode-specific elements (do not skip):
+  Reuse the .eyebrow-row tokens from architecture-decision.html.
 
-    A) Vertical timeline — the visual signature of this mode.
-       Markup pattern:
-         <ol class="timeline">
-           <li>
-             <span class="t-marker"></span>
-             <div class="t-body">
-               <h3>Marco 1 — Nome</h3>
-               <p class="muted">Descrição curta · Data ou janela</p>
-             </div>
-           </li>
-           ...
-         </ol>
-       Style:
-         .timeline { list-style: none; padding: 0; margin: 0; position: relative; }
-         .timeline::before {
-           content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px;
-           width: 1px; background: var(--border-card);
-         }
-         .timeline li { display: flex; gap: 24px; padding: 24px 0;
-                        border-bottom: 1px solid var(--hairline-alpha); }
-         .timeline .t-marker {
-           width: 8px; height: 8px; flex-shrink: 0; margin-top: 12px;
-           background: var(--accent-lime); transform: translateX(3px);
-         }
-       Each li carries one 8x8px lime square as the milestone marker. Spend max 4 of these per page.
+  ============================================================
+  MANDATORY SECTIONS (in order)
+  ============================================================
 
-    B) Rollback block — the ONE inversion exception in this mode.
-       Render as .card.invert with off-white background, dark text, and an uppercase
-       kicker label "PLANO DE SAÍDA" above the H2.
-       This makes rollback stand out as an editorial pull-quote: an exit ramp.
+    1. Masthead + Hero (single column)
+    2. TL;DR paper band
+    3. Waves band (MANDATORY — see signature)
+    4. Objetivo                 (single paragraph)
+    5. Estado atual / Estado-alvo (two prose blocks back-to-back)
+    6. Escopo / Não-objetivos    (two .checklist groups)
+    7. Plano passo-a-passo (por onda) (.checklist)
+    8. Riscos                    (.hairline-grid two-up with .status danger/warning)
+    9. Rollback                  (MANDATORY .paper-band full bleed — see signature)
+   10. Validação                 (.checklist of acceptance criteria, .done glyphs)
+   11. Donos                     (table.editorial: área | responsável | sign-off)
 
-  Lime usage budget (max 5 per page):
-    - 1 in the H1 <em>
-    - 1 CTA pill
-    - 1 active nav left-border
-    - up to 2 milestone markers OR 1 marker + 1 success status (count markers as a budget item)
-    Be strict — if you use 4 timeline markers, you've already exceeded budget. Use lime markers
-    only for milestones the user EXPLICITLY flagged as critical; render the rest in --accent-moss.
+  Sections 4–8 use the marginalia layout from base-page.html. Sections 9 (rollback)
+  is a full-bleed band that BREAKS OUT of <main class="sections">.
 
-  Status mapping for risk cards:
-    - Risco crítico -> .status.danger ("RISCO ALTO")
-    - Risco médio -> .status.warning ("ATENÇÃO")
-    - Mitigação planejada -> .status.success ("PLANEJADO")
-    - Bloqueio -> .status.danger ("BLOQUEADO")
+  ============================================================
+  MODE-SPECIFIC SIGNATURES — do not skip
+  ============================================================
 
-  Footer attribution stays: "Gerado por cs-html-explainer · Editorial Obsidian"
+  (A) Waves band — horizontal timeline of the rollout waves, rendered as a
+      typographic ruler with ticks and three wave cards.
+
+    <section class="waves-band">
+      <div class="band-head">
+        <span class="label">Roadmap</span>
+        <h2>Três ondas, sete semanas</h2>
+        <span class="right">SEM 1 → SEM 7</span>
+      </div>
+
+      <div class="ruler">
+        <div class="ticks">
+          <div class="tick major">S1</div>
+          <div class="tick">S2</div>
+          <div class="tick major">S3</div>
+          <div class="tick">S4</div>
+          <div class="tick major">S5</div>
+          <div class="tick">S6</div>
+          <div class="tick major">S7</div>
+          <div class="tick">—</div>
+        </div>
+      </div>
+
+      <div class="wave-grid">
+        <article class="wave critical">
+          <div class="num">01</div>
+          <h3>E-mail em produção</h3>
+          <div class="when">SEMANA 1 — 3 · canal crítico</div>
+          <p>Começa em paralelo com dual-write, ramps até 100% após 48h estáveis.</p>
+          <span class="tag">● Crítica</span>
+        </article>
+        <article class="wave">
+          <div class="num">02</div>
+          <h3>Push em produção</h3>
+          <div class="when">SEMANA 3 — 5 · validação</div>
+          <p>Push migrado e monitorado por uma semana antes da próxima onda.</p>
+          <span class="tag">Validação</span>
+        </article>
+        <article class="wave">
+          <div class="num">03</div>
+          <h3>SMS &amp; aposentadoria</h3>
+          <div class="when">SEMANA 5 — 7 · finalização</div>
+          <p>SMS migrado. Worker monolítico descomissionado. Marco final.</p>
+          <span class="tag">Encerramento</span>
+        </article>
+      </div>
+    </section>
+
+    Styles:
+      .waves-band { max-width: var(--max-content); margin: 0 auto;
+        padding: 0 var(--gutter) var(--space-2xl); }
+      .waves-band .band-head { display: flex; align-items: baseline; gap: 18px;
+        padding-bottom: var(--space-md); border-bottom: 1px solid var(--hairline-strong);
+        margin-bottom: var(--space-md); }
+      .waves-band .band-head .label { font-family: var(--font-sans); font-size: 10px;
+        font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--text-meta); }
+      .waves-band .band-head h2 { font-family: var(--font-serif); font-weight: 400;
+        font-size: clamp(28px, 3vw, 44px); letter-spacing: -0.02em; line-height: 1; margin: 0; }
+      .waves-band .band-head .right { margin-left: auto; font-family: var(--font-mono);
+        font-size: 11px; color: var(--text-meta); letter-spacing: 0.06em; }
+
+      .ruler { position: relative; padding: 24px 0 0; margin-top: var(--space-md); }
+      .ruler::before { content: ""; position: absolute; top: 24px; left: 0; right: 0;
+        height: 1px; background: var(--hairline-strong); }
+      .ticks { position: relative; display: grid; grid-template-columns: repeat(8, 1fr);
+        margin-bottom: var(--space-md); }
+      .tick { font-family: var(--font-mono); font-size: 10px; color: var(--text-meta);
+        letter-spacing: 0.04em; padding-top: 8px; position: relative; }
+      .tick::before { content: ""; position: absolute; top: -4px; left: 0;
+        width: 1px; height: 8px; background: var(--hairline-strong); }
+      .tick.major::before { background: var(--text); height: 12px; top: -8px; }
+      .tick.major { color: var(--text); }
+
+      .wave-grid { display: grid; grid-template-columns: 1fr 1fr 1fr;
+        gap: 24px; margin-top: var(--space-md); }
+      .wave { padding: var(--space-md) 0; border-top: 2px solid var(--text); }
+      .wave.critical { border-top-color: var(--accent-lime); }
+      .wave .num { font-family: var(--font-serif); font-style: italic; font-weight: 400;
+        font-size: 64px; line-height: 0.85; letter-spacing: -0.03em;
+        color: var(--text-meta); margin-bottom: var(--space-sm); }
+      .wave.critical .num { color: var(--accent-lime); }
+      .wave h3 { font-family: var(--font-serif); font-weight: 500; font-size: 22px;
+        line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 8px; max-width: 18ch; }
+      .wave .when { font-family: var(--font-mono); font-size: 11px; color: var(--text-meta);
+        letter-spacing: 0.06em; margin-bottom: 12px; }
+      .wave p { font-family: var(--font-sans); font-size: 14px; color: var(--text-muted);
+        line-height: 1.55; margin: 0; max-width: 32ch; }
+      .wave .tag { display: inline-block; margin-top: 14px; font-family: var(--font-sans);
+        font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+        text-transform: uppercase; color: var(--text-meta); }
+      .wave.critical .tag { color: var(--accent-lime); }
+      @media (max-width: 980px) {
+        .ticks { grid-template-columns: repeat(4, 1fr); }
+        .wave-grid { grid-template-columns: 1fr; }
+      }
+
+  (B) Rollback band — full-bleed .paper-band (the SINGLE inversion of this page —
+      use it instead of the TL;DR paper if you want the rollback to carry the
+      editorial weight).
+
+    <section class="paper-band" id="rollback">
+      <div class="inner">
+        <span class="label">Plano de saída · Rollback</span>
+        <h2>Se algo apertar, a flag <em>desliga</em> — e o monolítico assume em cinco minutos.</h2>
+        <p>Cada onda é controlada por uma feature flag binária. Em caso de regressão
+           (taxa de erro acima do baseline por mais de 5 minutos, ou queda de entrega
+           abaixo do SLO), a flag é desativada e 100% do tráfego volta ao worker monolítico.</p>
+        <p>O novo consumer permanece consumindo em shadow mode para investigação posterior.</p>
+        <div class="stamp">
+          <span>Tempo de rollback completo · <em>menos de 5 minutos</em></span>
+          <span>Plano P-{{NUM}} · Onda 1 · 2 · 3</span>
+        </div>
+      </div>
+    </section>
+
+    The .paper-band base CSS is already defined in templates/base-page.html.
+    NOTE: this mode allows TWO inversions only because they have different
+    semantic weight — TL;DR (top, summary) and Rollback (bottom, exit ramp).
+    If you want stricter editorial discipline, choose only one and render the
+    other in the dark-mode prose.
+
+  ============================================================
+  STATUS BADGE USAGE
+  ============================================================
+
+    - .status.danger   → RISCO ALTO / BLOQUEADO
+    - .status.warning  → ATENÇÃO
+    - .status.success  → PLANEJADO / OK
+    - .status.neutral  → NOTA
+
+  ============================================================
+  LIME BUDGET (max 5 per page) — STRICT
+  ============================================================
+
+    1. The H1 <em>                                          (the action verb)
+    2. The .cta primary in the masthead
+    3. The .kicker inside .eyebrow-row
+    4. The .wave.critical (only ONE wave can be flagged critical)
+    5. The .paper-band h2 <em> OR a single inline link
+
+  Forbidden:
+    - More than one .wave.critical card. Pick the heaviest wave only.
+    - Lime tag on more than one wave.
+    - Lime as a background in the ruler ticks.
+
+  ============================================================
+  RAIL NUMBERING SUGGESTION
+  ============================================================
+
+    01 — Objetivo         ref: por que
+    02 — Estados          ref: de onde, pra onde
+    03 — Escopo           ref: o que está dentro
+    04 — Plano            ref: por onda
+    05 — Riscos           ref: o que pode dar ruim
+    06 — Validação        ref: como saberemos      (after the paper-band)
+    07 — Donos            ref: quem assina
+
+  Footer footnote attribution stays fixed:
+    Editorial Obsidian — cs-html-explainer
 -->

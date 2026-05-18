@@ -1,69 +1,268 @@
 <!--
   Template: architecture-decision (ADR / DRE)
   Mode kicker: ADR / DRE  (or DECISÃO DE ARQUITETURA)
-  Use this scaffold for architecture decisions, trade-off analysis, and decision explanation.
 
-  Scaffold: copy base-page.html and apply the deltas below.
+  Use this scaffold for architecture decisions, trade-off analysis, and
+  decision explanation. Generates a visual DRE; if the user wants a source
+  ADR too, include a compact markdown ADR block inside <pre class="code">.
+
+  Scaffold: copy templates/base-page.html and apply the deltas below.
+  This mode replaces the default left-rail hero with the SINGLE-COLUMN hero
+  and uses the .hero-meta 4-column ledger instead of the .left-rail.
+
   See: ../design/editorial-obsidian.md for tokens and visual rules.
 
-  Hero shape (mandatory):
-    - kicker: "ADR / DRE"
-    - H1 with a decision verb italicized in lime, e.g.:
-        Decidimos <em>migrar</em> o pipeline de eventos para Kinesis.
-    - Subtitle in muted gray.
-    - Metadata row includes Status uppercase: PROPOSTO | ACEITO | SUPERADO | DEPRECIADO | REJEITADO.
+  ============================================================
+  HERO SHAPE — single column with eyebrow-row and 4-column ledger
+  ============================================================
 
-  Mandatory sections (in order):
-    1. Hero
-    2. TL;DR card (.card.invert — the one inversion allowed)
-    3. Contexto (prose, no chrome)
-    4. Problema / forças em conflito (prose + optional small .grid.two cards)
-    5. Opções consideradas (MANDATORY full-width comparison table — see below)
-    6. Decisão (single paragraph, prose, no card chrome)
-    7. Por que esta opção venceu (prose + optional .checklist)
-    8. Trade-offs (.grid.two of teal cards)
-    9. Consequências positivas (.checklist with .done glyphs)
-   10. Consequências negativas (.checklist, no .done glyphs)
-   11. Riscos e mitigações (.grid.three with .status danger/warning/success)
-   12. Sistemas/times impactados (table)
-   13. Antes / Depois (MANDATORY — see below)
-   14. ADR-source block (optional <pre class="code"> with compact markdown ADR text)
-   15. Próximos passos (.checklist)
+    <section class="hero" style="grid-template-columns: 1fr;">
+      <div>
+        <div class="eyebrow-row">
+          <span class="kicker">ADR / Decisão Arquitetural</span>
+          <span class="rule"></span>
+          <span class="id">ADR-{{NUM}} · {{DATE}}</span>
+        </div>
+        <h1>Decidimos <em>{{VERBO}}</em> {{COMPLEMENTO}}.</h1>
+        <div class="hero-meta">
+          <div class="item"><span class="k">Status</span><span class="v lime">● Aceito</span></div>
+          <div class="item"><span class="k">Owner</span><span class="v">{{TIME}}</span></div>
+          <div class="item"><span class="k">Opções avaliadas</span><span class="v">{{N}}</span></div>
+          <div class="item"><span class="k">Impacto</span><span class="v">{{N}} squads</span></div>
+        </div>
+      </div>
+    </section>
 
-  Mode-specific elements (do not skip):
+  The eyebrow-row is a 3-column micro layout (kicker · hairline · id):
 
-    A) Option comparison table — full width, hairlines only, NO zebra stripes.
-       Columns: Opção | Pontos fortes | Pontos fracos | Decisão.
-       The chosen row gets a single .status.success cell ("ESCOLHIDA") — no row fill, no lime background.
+    .eyebrow-row { display: flex; align-items: baseline; gap: 18px; margin-bottom: var(--space-lg); }
+    .eyebrow-row .kicker { font-family: var(--font-sans); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-lime); }
+    .eyebrow-row .rule { flex: 1; max-width: 280px; height: 1px; background: var(--hairline-strong); }
+    .eyebrow-row .id { font-family: var(--font-mono); font-size: 12px; color: var(--text-meta); letter-spacing: 0.04em; }
 
-    B) Antes / Depois panel — two stacked teal cards separated by a hairline label.
-       Markup:
-         <article class="card"><h3>Antes</h3><p class="muted">...</p></article>
-         <p class="meta-row" style="text-align:center;margin:24px 0;">→ DEPOIS</p>
-         <article class="card"><h3>Depois</h3><p class="muted">...</p></article>
-       Never side-by-side. The vertical stack is intentional (editorial respiro).
+  Status values for the metadata ledger (always uppercase Geist, never pills):
+    PROPOSTO   ACEITO   SUPERADO   DEPRECIADO   REJEITADO
 
-    C) ADR-source block — optional, only if user asks for a copyable ADR.
-       Render inside <pre class="code"> using compact ADR markdown:
-         # ADR-XXXX: <título>
-         Status: ACEITO
-         Date: YYYY-MM-DD
-         Context: ...
-         Decision: ...
-         Consequences: ...
+  ============================================================
+  PAGE STRUCTURE — TWO-PAGE EDITORIAL SPREAD
+  ============================================================
 
-  Status badges (in metadata row and option table):
-    - PROPOSTO / ACEITO -> .status.success
-    - SUPERADO / DEPRECIADO -> .status.neutral
-    - REJEITADO -> .status.danger
-    Always uppercase Geist 11px, never pill-shaped.
+  After the hero, this mode uses the SIGNATURE two-column spread:
 
-  Lime usage budget (max 5 per page):
-    - 1 in the H1 <em> (the decision verb)
-    - 1 CTA pill in topbar
-    - 1 active nav item left-border
-    - 1 in the "ESCOLHIDA" success label
-    - up to 1 inline link
+    <section class="spread">
+      <div class="col-left">  ... narrative ...   </div>
+      <div class="gutter-rule"></div>
+      <div class="col-right"> ... apparatus ...   </div>
+    </section>
 
-  Footer attribution stays: "Gerado por cs-html-explainer · Editorial Obsidian"
+  Styles:
+    .spread {
+      max-width: var(--max-content); margin: 0 auto;
+      padding: 0 var(--gutter) var(--space-2xl);
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      column-gap: clamp(40px, 5vw, 80px);
+    }
+    .spread > .gutter-rule { background: var(--hairline-strong); width: 1px; }
+    @media (max-width: 1024px) {
+      .spread { grid-template-columns: 1fr; }
+      .spread > .gutter-rule { display: none; }
+    }
+
+  Each column starts with a .folio-tag line:
+
+    <div class="folio-tag">
+      <span>Página</span> <span class="n">A</span>
+      <span class="right">Narrativa</span>
+    </div>
+
+    .folio-tag { display: flex; align-items: baseline; gap: 10px;
+      font-family: var(--font-sans); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-meta);
+      padding-bottom: 14px; border-bottom: 1px solid var(--hairline-alpha);
+      margin-bottom: var(--space-md); }
+    .folio-tag .n { font-family: var(--font-serif); font-style: italic;
+      font-size: 22px; color: var(--text); }
+    .folio-tag .right { margin-left: auto; font-family: var(--font-mono);
+      color: var(--text-meta); letter-spacing: 0.04em; }
+
+  ============================================================
+  MANDATORY SECTIONS — distributed across the spread
+  ============================================================
+
+  PAGE A (left — narrative)
+    1. TL;DR paper band
+    2. Contexto                 (prose, optional .dropcap on first paragraph)
+    3. Forças em conflito       (two .force blocks — see below)
+    4. Decisão                  (single paragraph prose)
+    5. Por que esta opção venceu (.checklist with .done glyphs)
+    6. Antes / Depois            (MANDATORY stacked panel — see below)
+
+  PAGE B (right — apparatus)
+    7. Opções consideradas      (MANDATORY vertical .options list — see below)
+    8. Trade-offs               (two .force blocks)
+    9. Consequências (+ / −)    (two .checklist groups)
+   10. Riscos e mitigações       (.hairline-grid OR list of .risk blocks)
+   11. Sistemas / times impactados (table.editorial)
+   12. ADR (markdown)            (optional <pre class="code">, ≤ 60 lines)
+   13. Próximos passos           (.checklist)
+
+  Note: the TL;DR sits inside .col-left (top of page A), NOT in its own
+  full-width .tldr-band — it belongs to the narrative spread.
+
+  ============================================================
+  MODE-SPECIFIC SIGNATURES — do not skip
+  ============================================================
+
+  (A) Options list — VERTICAL stack (NOT a 4-column table).
+      Each option is a row with roman index + opt-title with tag.
+      The CHOSEN one is rendered in italic lime.
+
+    <div class="options">
+      <div class="option">
+        <div class="idx">I</div>
+        <div>
+          <h3 class="opt-title">Manter fila + criar fila paralela<span class="opt-tag discard">Descartada</span></h3>
+          <div class="opt-row">
+            <div class="col"><span class="k">A favor</span><p>Zero migração.</p></div>
+            <div class="col"><span class="k">Contra</span><p>Multiplica produtores.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="option chosen">
+        <div class="idx">II</div>
+        <div>
+          <h3 class="opt-title">Event streaming — log particionado<span class="opt-tag chosen">Escolhida</span></h3>
+          <div class="opt-row">
+            <div class="col"><span class="k">A favor</span><p>Replay nativo. Múltiplos consumidores.</p></div>
+            <div class="col"><span class="k">Contra</span><p>Operação mais cara. Storage cresce.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    Styles:
+      .options { display: grid; gap: 0; }
+      .option { padding: var(--space-md) 0; border-top: 1px solid var(--hairline-alpha);
+        display: grid; grid-template-columns: 36px 1fr; gap: var(--space-md); }
+      .option:last-child { border-bottom: 1px solid var(--hairline-alpha); }
+      .option .idx { font-family: var(--font-serif); font-style: italic;
+        font-size: 22px; color: var(--text-meta); }
+      .option .opt-title { font-family: var(--font-serif); font-weight: 500;
+        font-size: 22px; letter-spacing: -0.01em; margin: 0 0 var(--space-sm); }
+      .option.chosen .opt-title { color: var(--accent-lime); font-style: italic; }
+      .option .opt-tag { font-family: var(--font-sans); font-size: 10px; font-weight: 600;
+        letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-meta);
+        margin-left: 10px; }
+      .option.chosen .opt-tag { color: var(--accent-lime); }
+      .option .opt-tag.discard::before { content: "× "; }
+      .option .opt-tag.chosen::before { content: "● "; }
+      .option .opt-row { display: grid; grid-template-columns: 1fr 1fr;
+        gap: var(--space-md); margin-top: 12px; }
+      .option .opt-row .col .k { display: block; font-family: var(--font-sans);
+        font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+        text-transform: uppercase; color: var(--text-meta); margin-bottom: 4px; }
+      .option .opt-row .col p { margin: 0; font-size: 14px;
+        color: var(--text-muted); line-height: 1.55; max-width: 42ch; }
+
+  (B) Antes / Depois panel — vertical stack with an arrow band.
+
+    <div class="ba">
+      <div class="panel before">
+        <div class="tag">Antes</div>
+        <h4>Fila gerenciada com entrega única</h4>
+        <p>Cada novo consumidor exigia coordenação com o produtor...</p>
+      </div>
+      <div class="arrow-band">DECISÃO TOMADA</div>
+      <div class="panel after">
+        <div class="tag">Depois</div>
+        <h4>Log de eventos particionado</h4>
+        <p>Produtores publicam por agregado; consumidores se inscrevem com offset próprio...</p>
+      </div>
+    </div>
+
+    Styles:
+      .ba .panel { padding: var(--space-md) 0; border-top: 1px solid var(--hairline-strong); }
+      .ba .panel:last-of-type { border-bottom: 1px solid var(--hairline-strong); }
+      .ba .panel .tag { font-family: var(--font-sans); font-size: 10px; font-weight: 600;
+        letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-meta);
+        margin-bottom: var(--space-sm); }
+      .ba .panel.after .tag { color: var(--accent-lime); }
+      .ba .panel h4 { font-family: var(--font-serif); font-weight: 400;
+        font-size: 22px; margin: 0 0 var(--space-sm); letter-spacing: -0.01em; }
+      .ba .panel p { font-size: 15px; line-height: 1.6; color: var(--text-muted);
+        max-width: 52ch; margin: 0; }
+      .ba .arrow-band { text-align: center; padding: 18px 0; font-family: var(--font-mono);
+        font-size: 11px; color: var(--text-meta); letter-spacing: 0.2em; }
+      .ba .arrow-band::before { content: "↓ "; color: var(--accent-lime); }
+
+  (C) Force blocks — two small stacked editorial cards used for "Forças em
+      conflito" and "Trade-offs".
+
+    <div class="forces">
+      <div class="force">
+        <span class="label">Pressão de produto</span>
+        <h4>Velocidade de entrega</h4>
+        <p>O time quer novos consumidores em dias, não semanas...</p>
+      </div>
+      <div class="force">
+        <span class="label">Pressão operacional</span>
+        <h4>Custo de operação</h4>
+        <p>A fila atual é gerenciada. Um cluster de streaming demanda capacity planning...</p>
+      </div>
+    </div>
+
+    Styles:
+      .forces { display: grid; gap: var(--space-md); }
+      .force { border-top: 1px solid var(--hairline-alpha); padding-top: var(--space-sm); }
+      .force .label { font-family: var(--font-sans); font-size: 10px; font-weight: 600;
+        letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-meta);
+        margin-bottom: 6px; }
+      .force h4 { font-family: var(--font-serif); font-style: italic; font-weight: 400;
+        font-size: 22px; margin: 0 0 8px; }
+      .force p { font-family: var(--font-sans); font-size: 14px; color: var(--text-muted);
+        margin: 0; max-width: 48ch; line-height: 1.6; }
+
+  ============================================================
+  ADR-SOURCE BLOCK (optional)
+  ============================================================
+
+  Only when the user asks for a copyable ADR. Keep it ≤ 60 lines.
+
+    <pre class="code"># ADR-014: Migrar fila de eventos para event streaming
+
+  Status: ACEITO
+  Date: 2026-05-14
+  Owner: Plataforma
+
+  ## Contexto
+  ...
+
+  ## Decisão
+  ...
+
+  ## Consequências
+  + ...
+  - ...
+    </pre>
+
+  ============================================================
+  LIME BUDGET (max 5 per page)
+  ============================================================
+
+    1. The H1 <em>                                  (the decision verb)
+    2. The .cta primary in the masthead
+    3. The .kicker inside .eyebrow-row
+    4. The CHOSEN option (.option.chosen .opt-title in italic lime)
+    5. The "Antes / Depois" .panel.after .tag        OR a single inline link
+
+  Forbidden:
+    - Lime as a row background in the options list.
+    - Lime inside the trade-offs / consequences checklists.
+    - Two italic-lime keywords in the same H1.
+
+  Footer footnote attribution stays fixed:
+    Editorial Obsidian — cs-html-explainer
 -->

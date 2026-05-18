@@ -1,119 +1,258 @@
 <!--
   Template: incident-report (postmortem)
   Mode kicker: POSTMORTEM  (or RELATÓRIO DE INCIDENTE)
-  Use this scaffold for incident reports, postmortems, debugging narratives, failure analysis.
 
-  Scaffold: copy base-page.html and apply the deltas below.
+  Use this scaffold for postmortems, debugging narratives, and failure analysis.
+
+  Scaffold: copy templates/base-page.html and apply the deltas below.
+  This is the ONLY mode allowed to use the CENTERED .hero.front variant. It is
+  also the only mode allowed to use the .forest-band full-bleed (for the root
+  cause). It uses the three-up .stats grid as its visual signature.
+
   See: ../design/editorial-obsidian.md for tokens and visual rules.
 
-  Hero shape (mandatory):
-    - kicker: "POSTMORTEM"
-    - H1 left-aligned by default. CENTERING the hero is permitted IF the user wants a somber tone:
-        text-align: center; max-width: 18ch; margin: 0 auto;
-      Only this mode allows centered hero. Subtitle and meta-row follow the centered alignment.
-    - H1 with the failure verb italicized in lime, e.g.:
-        O ingestor <em>parou</em> de processar eventos por 47 minutos.
+  ============================================================
+  HERO SHAPE — CENTERED "front page" variant
+  ============================================================
 
-  Mandatory sections (in order):
-    1. Hero
-    2. TL;DR card (.card.invert)
-    3. Impact stats (MANDATORY 3 huge stat blocks — see below)
-    4. Resumo (prose, max 68ch)
-    5. Timeline (MANDATORY — see below)
-    6. Detecção (prose + .status badges for source: monitoring, customer report, etc.)
-    7. Root cause (.card.forest — the only forest-green card in the page)
-    8. Contribuindo factors (.grid.two of teal cards)
-    9. O que funcionou bem (.checklist with .done glyphs)
-   10. O que falhou (.checklist with .status.warning labels in items, no .done)
-   11. Ações corretivas (table: ação | dono | prazo | status)
-   12. Ações preventivas (table — same columns)
-   13. Questões abertas (.checklist, no .done)
+  Replace the default left-rail hero with .hero.front:
 
-  Mode-specific elements (do not skip):
+    <section class="hero front">
+      <hr class="rule-top">
+      <div class="kicker">
+        Postmortem
+        <span class="severity">Severidade alta</span>
+      </div>
 
-    A) Impact stats — 3 oversized Playfair numbers in lime, with Geist kickers.
-       Markup pattern:
-         <section class="section" id="impact">
-           <h2>Impacto</h2>
-           <div class="grid three">
-             <div class="stat">
-               <span class="kicker">DURAÇÃO</span>
-               <p class="stat-num">47<small>min</small></p>
-             </div>
-             <div class="stat">
-               <span class="kicker">EVENTOS PERDIDOS</span>
-               <p class="stat-num">12.4<small>k</small></p>
-             </div>
-             <div class="stat">
-               <span class="kicker">USUÁRIOS IMPACTADOS</span>
-               <p class="stat-num">~830</p>
-             </div>
-           </div>
-         </section>
-       Style:
-         .stat-num {
-           font-family: var(--font-serif);
-           font-weight: 500;
-           font-size: clamp(48px, 6vw, 80px);
-           color: var(--accent-lime);
-           line-height: 1;
-           margin: 8px 0 0;
-         }
-         .stat-num small {
-           font-family: var(--font-sans);
-           font-size: 18px;
-           color: var(--text-muted);
-           font-weight: 400;
-           margin-left: 4px;
-         }
-       The big lime numbers count against the lime budget — see below.
+      <h1>O ingestor <em>parou</em> de processar eventos por 47 minutos.</h1>
 
-    B) Timeline — the dominant visual element of this mode.
-       Markup pattern:
-         <ol class="incident-timeline">
-           <li>
-             <time class="t-time">14:02</time>
-             <div class="t-body">
-               <p>Alarme dispara em produção.</p>
-             </div>
-           </li>
-           ...
-         </ol>
-       Style:
-         .incident-timeline {
-           list-style: none; padding: 0; margin: 0;
-         }
-         .incident-timeline li {
-           display: grid;
-           grid-template-columns: 80px 1fr;
-           gap: 24px;
-           padding: 16px 0;
-           border-bottom: 1px solid var(--hairline-alpha);
-           align-items: baseline;
-         }
-         .t-time {
-           font-family: var(--font-mono);
-           font-size: 14px;
-           color: var(--text-muted);
-         }
-         .t-body p { margin: 0; color: var(--text); }
-       Timestamps live in Geist Mono on the left rail.
+      <p class="subtitle">
+        Um deploy noturno deixou os consumers presos esperando por uma conexão TCP
+        que <strong>nunca completou</strong>. O lag chegou a 12 mil mensagens antes
+        da rollback manual.
+      </p>
 
-    C) Root cause — the only place forest green appears.
-       Markup: <article class="card forest"><h2>Causa raiz</h2><p>...</p></article>
-       Keep it self-contained; do not duplicate forest green elsewhere.
+      <div class="meta">
+        <div class="item"><span>Data</span>{{DATE}}</div>
+        <div class="item"><span>Detecção</span>{{DETECTION_TIME}}</div>
+        <div class="item"><span>Resolução</span>{{RESOLUTION_TIME}}</div>
+        <div class="item"><span>Owner</span>{{SQUAD}}</div>
+      </div>
+    </section>
 
-  Lime usage budget (max 5 per page) — STRICT in this mode:
-    - 1 in the H1 <em>
-    - 1 CTA pill
-    - 1 active nav left-border
-    - up to 2 .stat-num (you have 3 stat blocks; lime ONLY the most severe; render the others
-      in white --text). If you lime all 3, you've exceeded budget — pick the worst.
+  Extra tokens used by .hero.front (already in base-page.html):
 
-  Status badge usage:
-    - .status.danger for severities, on-call gaps, missed alerts.
-    - .status.warning for partial successes, slow detection.
-    - .status.success ONLY for "what went well" — paired with .done checklist items.
+    .hero.front { grid-template-columns: 1fr; max-width: 1100px; text-align: center; }
+    .hero.front h1 { margin: 0 auto; max-width: 18ch; }
+    .hero.front .rule-top { max-width: 320px; margin: 0 auto var(--space-md);
+      border-top: 1px solid var(--hairline-strong); border-left: 0; border-right: 0; border-bottom: 0; }
 
-  Footer attribution stays: "Gerado por cs-html-explainer · Editorial Obsidian"
+  Add to your inline CSS for the severity badge in the kicker line:
+
+    .hero.front .kicker .severity {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-sans); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text); padding-left: 14px; position: relative;
+      margin-left: 16px;
+    }
+    .hero.front .kicker .severity::before {
+      content: ""; position: absolute; left: 0; top: 50%;
+      transform: translateY(-50%); width: 4px; height: 14px;
+      background: var(--pure-black);
+    }
+
+  The .hero.front .meta is the only "ledger row" appropriate for the centered
+  hero — render it as a flex row with the same field/value treatment as
+  .hero-meta but centered:
+
+    .hero.front .meta {
+      margin-top: clamp(40px, 5vw, 80px); padding-top: var(--space-md);
+      border-top: 1px solid var(--hairline-strong);
+      display: flex; justify-content: center; gap: var(--space-lg);
+      flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px;
+      color: var(--text-muted); letter-spacing: 0.04em;
+    }
+    .hero.front .meta .item span {
+      font-family: var(--font-sans); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-meta); margin-right: 8px;
+    }
+
+  ============================================================
+  MANDATORY SECTIONS (in order)
+  ============================================================
+
+    1. Masthead + Hero (.hero.front centered)
+    2. Impact band — 3 oversized stats (MANDATORY — see signature)
+    3. Resumo                    (prose, max 64ch)
+    4. Timeline                  (MANDATORY .timeline-list — see signature)
+    5. Detecção                  (prose + .status badges)
+    6. Causa raiz                (MANDATORY full-bleed .forest-band — see signature)
+    7. Fatores contribuintes     (.hairline-grid two-up)
+    8. O que funcionou           (.checklist with .done glyphs)
+    9. O que falhou              (.checklist without .done)
+   10. Ações corretivas          (table.editorial: ação | dono | prazo | status)
+   11. Ações preventivas         (table.editorial — same columns)
+   12. Questões abertas          (.checklist without .done)
+
+  The impact stats sit in their own band BEFORE the marginalia sections.
+  The forest-band BREAKS OUT of <main class="sections"> (full-bleed background).
+
+  ============================================================
+  MODE-SPECIFIC SIGNATURES — do not skip
+  ============================================================
+
+  (A) Impact band — three oversized Playfair stat blocks separated by hairlines.
+
+    <section class="impact-band">
+      <div class="head">
+        <span class="label">Impacto</span>
+        <h2>Três números pra dimensionar o estrago</h2>
+        <span class="right">{{DATE}} {{T0}} → {{T1}}</span>
+      </div>
+      <div class="stats">
+        <div class="stat lime">
+          <span class="label">Duração total</span>
+          <span class="num">47<small>min</small></span>
+          <p class="desc">Do deploy até o ingestor voltar a processar mensagens.</p>
+        </div>
+        <div class="stat">
+          <span class="label">Eventos atrasados</span>
+          <span class="num">12,4<small>k</small></span>
+          <p class="desc">Mensagens acumuladas no backlog até o drain completo.</p>
+        </div>
+        <div class="stat">
+          <span class="label">Clientes impactados</span>
+          <span class="num">~830</span>
+          <p class="desc">Estimativa por relato de cliente e janela de envio.</p>
+        </div>
+      </div>
+    </section>
+
+    Extra tokens (.impact-band wrapper + .head — .stats and .stat are in base-page.html):
+
+      .impact-band { max-width: var(--max-content); margin: 0 auto; padding: 0 var(--gutter); }
+      .impact-band .head { display: flex; align-items: baseline; gap: 18px;
+        padding-bottom: var(--space-md); border-bottom: 1px solid var(--hairline-strong); }
+      .impact-band .head .label { font-family: var(--font-sans); font-size: 10px;
+        font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--text-meta); }
+      .impact-band .head h2 { font-family: var(--font-serif); font-weight: 400;
+        font-size: clamp(28px, 3vw, 44px); letter-spacing: -0.02em;
+        line-height: 1; margin: 0; }
+      .impact-band .head .right { margin-left: auto; font-family: var(--font-mono);
+        font-size: 11px; color: var(--text-meta); letter-spacing: 0.06em; }
+
+    LIME RULE: only ONE .stat is allowed the .lime class. Pick the most severe
+    metric (usually duration). The other two .stat numbers stay in white --text.
+
+  (B) Timeline — .timeline-list (already in base-page.html). Use markers to
+      mark the inflection points:
+
+    <ol class="timeline-list" aria-label="Timeline do incidente">
+      <li>
+        <time class="ts">03:14</time>
+        <span class="marker"></span>
+        <div class="body">
+          <span class="tag">Deploy</span><br>
+          Deploy do ingestor em produção. CI verde. Smoke tests passam.
+        </div>
+      </li>
+      <li>
+        <time class="ts">03:16</time>
+        <span class="marker critical"></span>
+        <div class="body">
+          <span class="tag danger">Início da falha</span><br>
+          Consumers começam a falhar conexão com o serviço de configuração.
+        </div>
+      </li>
+      <li>
+        <time class="ts">04:08</time>
+        <span class="marker lime"></span>
+        <div class="body">
+          <span class="tag lime">Mitigação</span><br>
+          Rollback completo. Consumers voltam a processar.
+        </div>
+      </li>
+    </ol>
+
+    Marker semantics:
+      .marker          — informational step       (gray border, transparent fill)
+      .marker.critical — failure / detection      (black fill, white border)
+      .marker.lime     — mitigation / resolution  (lime fill + border)
+
+    Add a .tag.danger inline style for the tag next to .marker.critical:
+
+      .timeline-list .body .tag.danger {
+        color: var(--text); padding-left: 12px; position: relative;
+      }
+      .timeline-list .body .tag.danger::before {
+        content: ""; position: absolute; left: 0; top: 50%;
+        transform: translateY(-50%); width: 3px; height: 11px;
+        background: var(--pure-black);
+      }
+
+    LIME RULE: at most 2 lime markers per page (mitigation + resolution).
+
+  (C) Forest band — full-bleed root-cause callout. The ONLY place where
+      --surface-forest appears.
+
+    <section class="forest-band" id="rootcause">
+      <div class="inner">
+        <span class="label">Causa raiz · Confirmada</span>
+        <h2>Um hostname desativado há duas semanas, ainda referenciado na configuração de produção.</h2>
+        <p>O arquivo de configuração injetado no container apontava para o hostname antigo
+           do serviço de configuração, que foi desativado há duas semanas. O CI não testa
+           resolução de DNS contra ambientes de produção e o deploy foi feito sem dry-run.</p>
+        <p>O comportamento de retry da biblioteca cliente silenciou a falha...</p>
+        <div class="stamp">
+          <span>Categoria · <em>Configuração / DNS</em></span>
+          <span>Reaberto após decom do hostname legado · 2 semanas</span>
+        </div>
+      </div>
+    </section>
+
+    Tokens are in base-page.html. Never duplicate the forest band; one per page.
+
+  ============================================================
+  STATUS BADGE USAGE
+  ============================================================
+
+    - .status.danger   → RISCO ALTO / FALHA / BLOQUEADO
+    - .status.warning  → EM ANDAMENTO / ATENÇÃO / DETECÇÃO TARDIA
+    - .status.success  → CONCLUÍDO / RESOLVIDO
+    - .status.neutral  → PLANEJADO
+
+  ============================================================
+  LIME BUDGET (max 5 per page) — VERY STRICT IN THIS MODE
+  ============================================================
+
+    1. The H1 <em>                                  (the failure verb)
+    2. The .cta primary in the masthead
+    3. The .kicker color in the centered hero
+    4. ONE .stat.lime number (the most severe metric)
+    5. Up to 2 .marker.lime + .tag.lime in the timeline (mitigation + resolution)
+
+  Count carefully — if you used .stat.lime AND 2 lime timeline markers AND a
+  success status in a corrective-actions table, you've already exceeded the
+  budget. Demote the success badges to .status.neutral when this happens.
+
+  ============================================================
+  RAIL NUMBERING SUGGESTION
+  ============================================================
+
+    01 — Resumo        ref: o que aconteceu
+    02 — Timeline      ref: minuto a minuto
+    03 — Detecção      ref: como percebemos
+    (forest-band — Causa raiz)
+    04 — Fatores       ref: contribuintes
+    05 — Funcionou     ref: o que deu certo
+    06 — Falhou        ref: o que precisa arrumar
+    07 — Corretivas    ref: o que já está em curso
+    08 — Preventivas   ref: pra não voltar
+    09 — Em aberto     ref: perguntas que ficaram
+
+  Footer footnote attribution stays fixed:
+    Editorial Obsidian — cs-html-explainer
 -->
