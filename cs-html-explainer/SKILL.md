@@ -1,7 +1,7 @@
 ---
 name: cs-html-explainer
-description: Use when the user wants an editorial dark-mode HTML artifact (huge serif headlines, generous whitespace, deep-teal surfaces, lime accent) for system explainers, ADR/DRE pages, implementation plans, incident reports, module maps, or executive-style handoff docs. Generates a single self-contained HTML file with the "Editorial Obsidian" identity — magazine-style respiro, Playfair Display + Geist typography, hairline dividers, and a strict 5-occurrence lime budget per page.
-version: 2.0.0
+description: Use when the user wants an editorial dark-mode HTML artifact (huge serif headlines, generous whitespace, deep-teal surfaces, lime accent) for system explainers, ADR/DRE pages, implementation plans, incident reports, module maps, or executive-style handoff docs. Generates a single self-contained HTML file with the "Editorial Obsidian" identity — magazine-style respiro, Playfair Display + Geist typography, hairline dividers, native HTML/CSS interactivity (disclosure, CSS tabs/steppers, hover highlight), and a strict 5-occurrence lime budget per page.
+version: 2.1.0
 license: MIT
 metadata:
   tags: [html, documentation, explainer, adr, dre, postmortem, module-map, editorial, magazine]
@@ -190,6 +190,102 @@ Apply the "60–70% of the page is empty" rule literally:
 
 Use the spacing scale tokens (`--space-sm` through `--space-2xl`) — do not invent ad-hoc values for between-section spacing.
 
+## Interactivity rules
+
+Editorial Obsidian is a reading artifact, but a reading artifact can still be didactic. Whenever a section would benefit from progressive disclosure, lateral navigation, or visual emphasis on relationships, prefer an interactive treatment over a wall of static text.
+
+**Default posture: actively look for places to add native interactivity.** A page with zero interactive affordances is a missed opportunity if any of the following exists: a long FAQ, more than three "options considered", a timeline with many entries, a flow diagram with named nodes, a troubleshooting list, or a stepper-shaped plan. The rule is "incentivar" — when in doubt, add it.
+
+### Hard constraint: zero JavaScript
+
+All interactivity must be implemented with native HTML and CSS only. No `<script>` blocks. No inline event handlers. No libraries. If a behavior cannot be expressed with semantic HTML + CSS (`:target`, `:checked`, `:hover`, `:focus-visible`, `:has()`, sibling/adjacent combinators), it does not belong in this skill.
+
+This preserves the four invariants of the artifact: self-contained for offline reading, printable, accessible by default, and reviewable without trusting executable code.
+
+### Approved interactive patterns
+
+Three patterns are blessed. Use them deliberately — not every section needs interactivity, but every page should have at least one of these unless the content is genuinely too short to justify it.
+
+#### 1. Disclosure (`<details>` / `<summary>`)
+
+Native progressive disclosure. Default for any list where the headline is enough for skimmers but readers may want depth.
+
+When to use:
+- FAQ items (one `<details>` per question).
+- Troubleshooting steps (symptom in `<summary>`, diagnosis + fix in the body).
+- "Options considered" in ADR/DRE — collapse the rejected ones, leave the chosen option open by default (`<details open>`).
+- Timeline entries with optional deep-dive context.
+- "Falhas conhecidas" / "Premissas" / "Questões abertas" lists.
+
+Constraints:
+- The `<summary>` must be self-contained: a reader who never expands it should still understand the gist.
+- Style `<summary>` as a marginalia row (left rail kicker + Playfair H3-equivalent on the right). Do NOT use the default browser triangle — replace with a typographic glyph (`+` / `−`) that flips via `[open] > summary::before`.
+- Keep one disclosure per row, hairline divider between rows, no framed cards.
+- Never put the TL;DR, the H1, or the mode-specific signature block inside a `<details>`. Skimmers must see them without interaction.
+
+#### 2. CSS tabs and steppers (`:target` or `:checked`)
+
+Lateral navigation between equivalent views. Default for content that is "one of N alternatives at a time" rather than "all of N in sequence".
+
+When to use:
+- Implementation-plan waves: tabs for Wave 1 / Wave 2 / Wave 3, only one panel visible.
+- ADR options considered: tab strip with one option per tab, chosen option pre-selected.
+- System-explainer "Fluxo" alternatives (happy path vs. failure path vs. retry path).
+- Module-map "Mudanças comuns" cookbook entries.
+
+Implementation guidance:
+- Prefer the `:target` pattern when the tabs map to permalinkable views (a stakeholder can share a URL pointing at the active tab).
+- Use the radio + `<label>` + `:checked` pattern when permalinkability does not matter and you need a default-selected tab on first load.
+- The tab strip itself is typographic: uppercase Geist kickers separated by hairlines, the active tab gets a 2px lime bottom border (this counts toward the lime budget — see the per-mode allocations).
+- Provide visible `:focus-visible` outlines on tab triggers (`<a>` for `:target`, `<label>` for radio).
+- Always render a print stylesheet that expands every tab into a stacked, fully visible view (`@media print { .tab-panel { display: block !important } }`). The artifact must remain complete on paper.
+
+#### 3. Hover and focus highlight on diagrams
+
+Relational emphasis. Default for any `.flow` diagram or dependency map where nodes share connections that are not obvious at rest.
+
+When to use:
+- `.flow` between TL;DR and the rest of a system-explainer page.
+- Module-map dependency graphs.
+- ADR "Antes/Depois" panels (hovering a "before" element highlights the corresponding "after" element).
+- Incident-report timeline (hover a marker, surface the related action item below).
+
+Implementation guidance:
+- Use sibling/adjacent combinators (`.flow:hover .node:not(:hover)`) or `:has()` to dim siblings of the hovered node.
+- Pair every `:hover` with `:focus-within` (or `:focus-visible` on a focusable child) so keyboard users get the same affordance.
+- Highlight must not be color-only — combine with weight, italic, or a hairline thickness change so the cue survives in monochrome.
+- Never use lime as the highlight color (it would blow the budget). Use `--text` white going to `--text-muted` gray on non-hovered siblings, or thicken the hairline on the active node.
+- The diagram must remain fully legible at rest. Hover is enrichment, not a prerequisite for understanding.
+
+### Mode-specific guidance
+
+| Mode | Strongly recommended | Optional | Skip |
+|---|---|---|---|
+| `system-explainer` | Disclosure for FAQ, Troubleshooting, Falhas | Hover/focus highlight on `.flow` | Tabs (the page is a single narrative) |
+| `architecture-decision` | Disclosure for rejected options; tabs for "Opções consideradas" if there are 3+ | Hover/focus on Antes/Depois | Disclosure on the chosen option (must stay open) |
+| `implementation-plan` | Tabs/stepper for waves; disclosure for per-wave detail | Disclosure for "Riscos" with mitigation depth | Hiding the rollback `.paper-band` behind a disclosure |
+| `incident-report` | Disclosure for "O que funcionou / O que falhou / Questões abertas" | Hover/focus on timeline ↔ actions | Disclosure on the impact band, timeline markers, or root-cause `.forest-band` |
+| `module-map` | Disclosure for "Mudanças comuns" cookbook; tabs across cookbook recipes | Hover/focus on dependency diagram | Disclosure on Entry points or the sticky file tree |
+
+### Forbidden interactivity
+
+Even with the patterns above, do NOT:
+
+- Hide the TL;DR, hero, masthead, mode-specific signature block, or footer footnote behind any interactive control.
+- Use animation longer than 150ms on any interactive transition. No bouncy easings, no glow pulses.
+- Apply hover/focus styling that depends on color alone (always pair with weight, italic, or hairline thickness).
+- Build a custom accordion in `<div>`s when `<details>` works.
+- Introduce a tab pattern where the user actually needs to read all panels in sequence — that is a stepper of full sections, not tabs.
+- Build search boxes, sortable tables, or live filters (those require JS or compromise the print/offline contract).
+
+### Accessibility contract for interactive elements
+
+- Every `<details>` / `<summary>` is keyboard-operable by default; do not break that.
+- Every CSS-tab trigger must be a real `<a href="#...">` (for `:target`) or `<label for="...">` paired with a visually hidden `<input type="radio">` (for `:checked`). Never fake interactivity with `<div onclick>`-style markup (no `onclick` is allowed anyway — see the hard constraint).
+- Provide `:focus-visible { outline: 2px solid var(--accent-lime); outline-offset: 4px; }` on every interactive element. The lime focus ring does NOT count against the 5-occurrence lime budget — it is a transient accessibility affordance, not a static page element.
+- Touch targets ≥ 32×32px (summary rows, tab labels).
+- Print stylesheet (`@media print`) must expand every collapsed `<details>`, reveal every tab panel, and remove hover-only styling so the artifact prints as a complete document.
+
 ## Lime discipline rule
 
 `--accent-lime` `#DBFFA5` may appear in at most **5 places** on a single page. Count them.
@@ -243,7 +339,7 @@ If the user provides company or product names in the content they want documente
 - Use semantic HTML: `header`, `main`, `section`, `article`, `aside`, `nav`, `table`, `button`, `details`/`summary`, `time`.
 - Provide visible focus states (`:focus-visible { outline: 2px solid var(--accent-lime); outline-offset: 4px; }`).
 - Pair color with text or icons — never color alone.
-- Avoid animation unless it improves comprehension.
+- Avoid animation unless it improves comprehension. Interactive transitions (disclosure expand, tab change, hover highlight) are allowed but must stay ≤ 150ms and use a neutral easing — no bouncy easings, no glow pulses.
 
 ## Diagram rules
 
@@ -252,6 +348,7 @@ If the user provides company or product names in the content they want documente
 - Short labels (max ~30 characters per node).
 - Include a short prose paragraph below every diagram explaining what the diagram does NOT show (side effects, async fan-out, retries — whatever is omitted).
 - Avoid overcrowding — break into multiple diagrams if you have more than ~6 nodes.
+- Prefer adding a hover/focus highlight to relational diagrams (`.flow`, dependency maps, Antes/Depois) — see the Interactivity rules section. The diagram must still be legible at rest; hover is enrichment, not a prerequisite.
 
 ## Content rules
 
@@ -289,6 +386,9 @@ Before finishing, verify:
 - TL;DR exists near the top.
 - The mode-specific signature block is present (flow / spread / waves band / front-page+stats+forest / entry points + sticky tree).
 - The masthead and footer footnote are present (no sidebar+topbar SaaS chrome).
+- At least one native HTML/CSS interactive affordance is present where it improves comprehension (disclosure, CSS tabs/steppers, or hover/focus highlight) — see the Interactivity rules section. Skip only if the content is genuinely too short to justify it.
+- No `<script>` blocks and no inline event handlers anywhere in the output.
+- A `@media print` block expands every `<details>` and reveals every tab panel so the artifact prints as a complete document.
 - Unknowns are clearly marked, not invented.
 - The artifact is skimmable in under 60 seconds.
 
@@ -324,5 +424,10 @@ Before finishing, verify:
 - [ ] Page background is `#1A1615`, never `#000`.
 - [ ] Body is left-aligned everywhere except (optionally) the incident-report `.hero.front`.
 - [ ] Hairlines separate sections, not framed boxes.
+- [ ] At least one native HTML/CSS interactive affordance is present where it adds didactic value (disclosure / CSS tabs / hover-focus highlight) — unless the content is genuinely too short to justify it.
+- [ ] Zero `<script>` tags, zero inline event handlers, zero external JS.
+- [ ] `:focus-visible` outlines are present on every interactive element (lime ring, does not count toward the lime budget).
+- [ ] `@media print` rules expand every `<details>` and reveal every tab panel.
+- [ ] TL;DR, hero, mode-specific signature block, and footer footnote are never hidden behind interactive controls.
 - [ ] Unknowns are labeled, not invented.
 - [ ] Footer footnote is present with the `Editorial Obsidian — cs-html-explainer` attribution.
